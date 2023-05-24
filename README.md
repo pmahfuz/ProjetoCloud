@@ -96,11 +96,18 @@ O recurso aws_instance é usado para lançar uma instância EC2 na subnet padrã
 # Inicialização do Terraform
 
 Para rodar o código, abra o terminal na pasta onde está o código e rode o seguinte comando:
+
 - terraform init
+
 Em seguida rode o seguinte comando para verificar se o código está correto:
+
 - terraform plan
+
 Se tudo estiver correto, rode o seguinte comando para criar as instâncias:
+
 - terraform apply
+
 Para destruir as instâncias, rode o seguinte comando:
+
 - terraform destroy
 
