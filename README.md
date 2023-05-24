@@ -1,10 +1,14 @@
 # ProjetoCloud
 ## Roteiro para utilização do programa
-*	Overview
+##	Overview
+
 O objetivo deste projeto é criar uma infraestrutura básica na nuvem AWS (Amazon Web Services) para hospedar um aplicativo web escalável e resiliente. O projeto envolve a criação de duas instâncias EC2 vazias e um Elastic Load Balancer (ELB) que gerencia o tráfego entre as duas instâncias.
-*	Pré-requisitos
-Chaves de acesso:
+##	Pré-requisitos
+
+- Chaves de acesso:
+
 Para conseguir suas chaves de acesso siga o passo a passo abaixo.
+
 1.	Entre na sua conta na AWS com seu login e senha e na página inicial, clique em seu nome de usuário no canto superior direito e selecione a opção “My Security Credentials”.
 
 2.	Clique em “Create New Access Key”, localizado na guia “Access Keys”.
@@ -14,12 +18,11 @@ Para conseguir suas chaves de acesso siga o passo a passo abaixo.
 É extremamente importante não vazar suas chaves de segurança da AWS. Essas chaves são essenciais para proteger seus dados e serviços na nuvem. Se caírem em mãos erradas, podem resultar em acesso não autorizado, violações de privacidade, prejuízos financeiros e até mesmo problemas legais. Para que isso não aconteça, vou demonstrar uma maneira para que as chaves possam ser utilizadas sem perigo de vazamento.
 
 #### Windows: 
+
 1.	Abra o menu e pesquise por “Environment Variables”.
 2.	Clique em “Environment variables” dentro do menu e então selecione “New” embaixo das variáveis de usuário para criar uma nova variável.
 3.	Coloque o nome da variável como “AWS_ACCESS_KEY_ID” e como seu valor, coloque a sua chave de acesso.
 4.	Repita para sua chave secreta, mas dessa vez com o nome da variável sendo “AWS_SECRET_ACCESS_KEY”.
-
-
 
 
 #### Mac/Linux:
@@ -46,14 +49,14 @@ Para verificar que foi instalado corretamente, rode o seguinte comando no termin
 
 
 
-*	Personalização do código
+###	Personalização do código
 
 Em ambos os códigos das instâncias Ec2, seria interessante modificar os nomes personalizados do que está sendo criado, no caso deste projeto, alguns exemplos seriam:
 1.	Na hora de criar o VPC, substituir “Vpc Mahfuz” pelo nome que preferir para sua VPC.
 2.	Quando a subnet é criada, substituir “Subnet Mahfuz” pelo nome que preferir para sua subnet padrão.
 3.	Na hora de criar o grupo de segurança, substituir “Security Group Mahfuz” pelo nome que preferir para a sua segurança de cada instância.
 4.	Na hora de criar sua instância, substituir “Aplicação ELB Mahfuz” para o nome da instância que preferir.
-##### Configuração do provedor AWS:
+#### Configuração do provedor AWS:
 A primeira seção do código configura o provedor AWS, definindo a região para "us-east-1". Essa região pode ser alterada para corresponder à região desejada do seu projeto.
 
 ### Pegando sua chave:
