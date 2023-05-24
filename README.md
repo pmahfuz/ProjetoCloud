@@ -64,9 +64,17 @@ O recurso aws_instance é usado para lançar uma instância EC2 na subnet padrã
 
 1.	Selecione “Launch instance” dentro de EC2 Dashboard.
 
+![image](https://github.com/pmahfuz/ProjetoCloud/assets/62957998/2d34d957-a575-4418-bd65-bf7ef7efd456)
+
 2.	Coloque um nome qualquer e selecione a AMI que preferir (no caso do projeto foi utilizado da Ubuntu). No campo “Key pair”, coloque a chave que você criou e em seguida suba a instância.
+
+![image](https://github.com/pmahfuz/ProjetoCloud/assets/62957998/12656769-4746-4e5c-bd0d-192363e198a7)
 
 3.	Assim que a instância tiver “Running”, selecione ela, clique no drop down “Actions”, selecione “Image and templates” e crie uma imagem colocando o nome que preferir e clicando “Create image”.
 
+![image](https://github.com/pmahfuz/ProjetoCloud/assets/62957998/9c8cee1f-3761-4eee-863b-aa5a2653330b)
+
 4.	Entre no menu “AMIs” e assim que sua imagem estiver “Available”, entre na sua AMI e substitua o id como demonstrado na foto abaixo pelo id da sua imagem.
+
+![image](https://github.com/pmahfuz/ProjetoCloud/assets/62957998/8e9a6015-e9c4-4b45-86f7-77d91aed2303)
 
