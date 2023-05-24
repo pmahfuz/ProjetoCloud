@@ -62,9 +62,7 @@ Para verificar que foi instalado corretamente, rode o seguinte comando no termin
 - terraform version
 
 
-
-
-###	Personalização do código
+##	Personalização do código
 
 Em ambos os códigos das instâncias Ec2, seria interessante modificar os nomes personalizados do que está sendo criado, no caso deste projeto, alguns exemplos seriam:
 1.	Na hora de criar o VPC, substituir “Vpc Mahfuz” pelo nome que preferir para sua VPC.
