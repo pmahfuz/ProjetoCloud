@@ -20,7 +20,7 @@ O recurso aws_security_group cria um grupo de segurança para a instância EC2. 
 
 ##	Pré-requisitos
 
-- Chaves de acesso:
+### Chaves de acesso:
 
 Para conseguir suas chaves de acesso siga o passo a passo abaixo.
 
@@ -45,7 +45,7 @@ Rode os seguintes códigos no seu terminal, substituindo os textos em aspas por 
 - export AWS_ACCESS_KEY_ID="sua_chave_de_acesso"
 - export AWS_SECRET_ACCESS_KEY="sua_chave_secreta "
 
-Instalação do Terraform:
+### Instalação do Terraform:
 
 #### Windows: 
 1.	Entre no site oficial https://aws.amazon.com/ e baixe a pasta ZIP da versão 64-bit Windows, e extraia os conteúdos para uma pasta a sua escolha.
