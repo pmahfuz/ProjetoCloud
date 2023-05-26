@@ -15,22 +15,27 @@ O objetivo deste projeto é criar uma infraestrutura básica na nuvem AWS (Amazo
 
 - ec2.1.tf
 
-1. Configuração do provedor AWS: Neste bloco, o provedor AWS é configurado com as credenciais apropriadas e a região definida como "us-east-1".
-2. Criação da VPC padrão: Neste bloco, é criada uma VPC padrão caso ela não exista. A VPC é identificada pelo nome "Vpc Mahfuz".
-3. Utilização do recurso de dados para obter zonas de disponibilidade: Neste bloco, um recurso de dados é utilizado para obter a lista de todas as zonas de disponibilidade na região especificada.
-4. Criação da sub-rede padrão: Neste bloco, é criada uma sub-rede padrão na zona de disponibilidade "us-east-1a". A sub-rede é configurada para atribuir automaticamente um endereço IP público aos recursos lançados nela. A sub-rede é identificada pelo nome "Subnet Mahfuz".
-5. Criação do grupo de segurança: Neste bloco, é criado um grupo de segurança para a instância EC2. O grupo de segurança permite o acesso nas portas 80 (HTTP) e 22 (SSH) a partir de qualquer IP. Também é configurada uma regra de saída que permite todo o tráfego. O grupo de segurança é identificado pelo nome "Security Group Mahfuz".
-6. Criação da instância EC2: Neste bloco, a instância EC2 é lançada. É especificada a AMI (Amazon Machine Image) a ser usada, o tipo de instância, a sub-rede em que a instância será lançada, o grupo de segurança associado e a chave SSH para acesso à instância. A instância é identificada pelo nome "Aplicação ELB Mahfuz".
-7. Impressão do endereço IP público da instância EC2: Neste bloco, é definida uma saída que imprime o endereço IPv4 público da instância EC2. Isso permite que você visualize facilmente o endereço IP após o lançamento da instância.
+1. Configuração do provedor AWS com as credenciais adequadas para a região "us-east-1".
+2. Criação de uma VPC padrão, caso ela não exista, com a tag "Vpc Mahfuz - Terraform".
+3. Utilização de uma fonte de dados para obter todas as zonas de disponibilidade disponíveis na região.
+4. Recurso de Elastic IP (EIP) da AWS, configurado para ser utilizado em uma VPC, com a tag "EIP Mahfuz".
+5. Criação de um gateway NAT (Network Address Translation) que permite que instâncias privadas em uma VPC acessem a internet. Esse recurso utiliza o EIP definido anteriormente e está associado a uma subnet pública com a tag "NAT Gateway Mahfuz".
+6. Configuração de uma tabela de roteamento que direciona o tráfego de saída para a internet através do gateway NAT criado anteriormente. Essa tabela está associada à VPC padrão e possui a tag "Route Table Mahfuz".
+7. Criação de uma subnet pública na zona de disponibilidade "us-east-1a" da VPC padrão. Essa subnet permite que instâncias nela lançadas tenham um IP público automaticamente atribuído. Ela possui um bloco de endereços determinado pela função cidrsubnet e possui a tag "Subnet Mahfuz Public".
+8. Criação de um grupo de segurança (security group) para a instância EC2. Esse grupo permite o acesso nas portas 80 (HTTP) e 22 (SSH). Ele está associado à VPC padrão e possui a tag "Security Group Mahfuz".
+9. Lançamento de instâncias EC2 com base na imagem AMI especificada. Duas instâncias são lançadas, utilizando o tipo de instância "t2.micro", e estão associadas à subnet pública criada anteriormente e ao grupo de segurança definido. Elas são identificadas com tags "Ec2-1" e "Ec2-2", respectivamente, para diferenciá-las.
+10. O código do usuário (user_data) é fornecido através de um arquivo chamado "userdata.tpl", que contém instruções a serem executadas para instalação do nginx na instância.
 
 - ELB.tf
 
-1. Recurso de balanceador de carga elástico (ELB) da AWS: Neste bloco, é definido um recurso de balanceador de carga elástico da AWS. O balanceador de carga é identificado pelo nome "web-elb".
-2. Grupos de segurança do balanceador de carga: Neste bloco, é especificado o(s) grupo(s) de segurança associado(s) ao balanceador de carga. O grupo de segurança da instância EC2, definido anteriormente, é utilizado como grupo de segurança do balanceador de carga.
-3. Sub-redes do balanceador de carga: Neste bloco, são especificadas as sub-redes em que o balanceador de carga será implantado. As sub-redes são identificadas pelos IDs "aws_default_subnet.default_az1.id" e "aws_default_subnet.second_az1.id". Isso permite que o balanceador de carga seja distribuído em múltiplas zonas de disponibilidade, aumentando a resiliência e disponibilidade da aplicação.
-4. Balanceamento de carga entre zonas de disponibilidade: Neste bloco, é configurado o balanceamento de carga entre as zonas de disponibilidade. A propriedade "cross_zone_load_balancing" é definida como verdadeira, permitindo que o balanceador de carga distribua o tráfego de forma equilibrada entre as instâncias em diferentes zonas de disponibilidade.
-5. Verificação de saúde: Neste bloco, é definida a configuração de verificação de saúde para as instâncias. O balanceador de carga realizará verificações regulares para garantir que as instâncias estejam saudáveis e prontas para receber o tráfego. É definido um limite mínimo de requisições saudáveis (healthy_threshold) e um limite mínimo de requisições não saudáveis (unhealthy_threshold). Além disso, é especificado um tempo limite (timeout) e um intervalo (interval) para as verificações de saúde. O destino (target) da verificação é definido como "HTTP:80/", o que significa que o balanceador de carga realizará solicitações HTTP na porta 80 para verificar a saúde das instâncias.
-6. Listener (ouvinte) do balanceador de carga: Neste bloco, é configurado um ouvinte para o balanceador de carga. O ouvinte é responsável por receber o tráfego do cliente e encaminhá-lo para as instâncias EC2. Neste caso, o ouvinte está configurado para escutar na porta 80 (lb_port) e protocolo HTTP (lb_protocol) e encaminhar o tráfego para a porta 80 (instance_port) e protocolo HTTP (instance_protocol) das instâncias EC2.
+1. Recurso de Elastic Load Balancer (ELB) da AWS, denominado "web-elb", responsável por distribuir o tráfego entre as instâncias registradas.
+2. Definição do nome do balanceador de carga como "web-elb".
+3. Configuração dos grupos de segurança associados ao balanceador de carga. Nesse caso, utiliza o ID do grupo de segurança "aws_security_group.ec2_security_group.id".
+4. Especificação das subnets em que o balanceador de carga será criado. Utiliza o ID da subnet "aws_subnet.public_subnet.id".
+5. Registro das instâncias que serão balanceadas pelo ELB. Nesse caso, são especificados os IDs das duas instâncias EC2 criadas anteriormente: "aws_instance.ec2_instance[0].id" e "aws_instance.ec2_instance[1].id".
+6. Habilitação do balanceamento de carga entre as zonas de disponibilidade (cross-zone load balancing).
+7. Configuração da verificação de integridade (health check) para as instâncias registradas. É definido um número mínimo de verificações consecutivas bem-sucedidas ("healthy_threshold") e um número mínimo de verificações consecutivas com falha ("unhealthy_threshold") para considerar uma instância como saudável ou não saudável, respectivamente. Também são definidos o tempo limite da verificação ("timeout") e o intervalo entre as verificações ("interval"). O alvo da verificação é definido como "HTTP:80/", indicando que será realizada uma verificação de saúde por meio de uma solicitação HTTP na porta 80.
+8. Configuração do listener do balanceador de carga. É especificada a porta no balanceador de carga para escutar as requisições ("lb_port"), o protocolo a ser utilizado no listener ("lb_protocol"), a porta nas instâncias EC2 para redirecionar o tráfego ("instance_port") e o protocolo a ser utilizado para comunicar-se com as instâncias ("instance_protocol"). No caso, utiliza-se o protocolo HTTP nas portas 80 tanto no listener quanto nas instâncias.
 
 - userdata.tpl
 
