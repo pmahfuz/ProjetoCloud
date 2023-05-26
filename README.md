@@ -1,27 +1,40 @@
 # ProjetoCloud
 ##	Overview
 
-O objetivo deste projeto é criar uma infraestrutura básica na nuvem AWS (Amazon Web Services) para hospedar um aplicativo web escalável e resiliente. O projeto envolve a criação de duas instâncias EC2 vazias e um Elastic Load Balancer (ELB) que gerencia o tráfego entre as duas instâncias.
+O objetivo deste projeto é criar uma infraestrutura básica na nuvem AWS (Amazon Web Services) para hospedar um aplicativo web escalável e resiliente. O projeto envolve a criação de duas instâncias EC2 com nginx estalado nelas e um Elastic Load Balancer (ELB) que gerencia o tráfego entre as duas instâncias.
 
 #### Diagrama do projeto
 
 ![image](https://github.com/pmahfuz/ProjetoCloud/assets/62957998/9f1e5c28-90d0-4e34-aec6-44f8f28a2e2f)
 
+#### Organização dos arquivos 
+
+![image](https://github.com/pmahfuz/ProjetoCloud/assets/62957998/41c5415c-3ad1-4a5a-a63f-2287d4cc48c8)
 
 ## Um pouco sobre o código
 
-1. Configuração do provedor AWS:
-A primeira seção do código do arquivo ec2.1 configura o provedor AWS, definindo a região para "us-east-1". Essa região pode ser alterada para corresponder à região desejada do seu projeto.
-2. Criação do VPC padrão:
-A próxima etapa cria um VPC padrão usando o recurso aws_default_vpc, essa etapa verifica se um VPC existe e, se não existir, cria um novo. 
-3. Uso do data source aws_availability_zones:
-O data source aws_availability_zones é usado para obter todas as zonas de disponibilidade disponíveis na região configurada. Isso é útil para uso posterior ao provisionar recursos em zonas de disponibilidade específicas.
-4. Criação da subnet padrão:
-O recurso aws_default_subnet é usado para criar uma subnet padrão na zona de disponibilidade "us-east-1a". A subnet padrão é associada automaticamente ao VPC padrão e configurada para permitir IP público quando uma instância EC2 é lançada nela.
-5. Criação do grupo de segurança:
-O recurso aws_security_group cria um grupo de segurança para a instância EC2. Esse grupo de segurança permite acesso nas portas 80 (HTTP) e 22 (SSH). As regras de ingresso permitem tráfego de entrada nessas portas de qualquer endereço IP ("0.0.0.0/0"), enquanto a regra de saída permite todo o tráfego de saída.
-6. O ELB é criado para gerenciar o tráfego entre as duas instâncias EC2. O ELB é configurado para ouvir na porta 80 e encaminhar o tráfego para as instâncias EC2 na porta 80. Ele é configurado para usar o health check padrão do ELB, que verifica se a instância EC2 está respondendo na porta 80. 
+- ec2.1.tf
 
+1. Configuração do provedor AWS: Neste bloco, o provedor AWS é configurado com as credenciais apropriadas e a região definida como "us-east-1".
+2. Criação da VPC padrão: Neste bloco, é criada uma VPC padrão caso ela não exista. A VPC é identificada pelo nome "Vpc Mahfuz".
+3. Utilização do recurso de dados para obter zonas de disponibilidade: Neste bloco, um recurso de dados é utilizado para obter a lista de todas as zonas de disponibilidade na região especificada.
+4. Criação da sub-rede padrão: Neste bloco, é criada uma sub-rede padrão na zona de disponibilidade "us-east-1a". A sub-rede é configurada para atribuir automaticamente um endereço IP público aos recursos lançados nela. A sub-rede é identificada pelo nome "Subnet Mahfuz".
+5. Criação do grupo de segurança: Neste bloco, é criado um grupo de segurança para a instância EC2. O grupo de segurança permite o acesso nas portas 80 (HTTP) e 22 (SSH) a partir de qualquer IP. Também é configurada uma regra de saída que permite todo o tráfego. O grupo de segurança é identificado pelo nome "Security Group Mahfuz".
+6. Criação da instância EC2: Neste bloco, a instância EC2 é lançada. É especificada a AMI (Amazon Machine Image) a ser usada, o tipo de instância, a sub-rede em que a instância será lançada, o grupo de segurança associado e a chave SSH para acesso à instância. A instância é identificada pelo nome "Aplicação ELB Mahfuz".
+7. Impressão do endereço IP público da instância EC2: Neste bloco, é definida uma saída que imprime o endereço IPv4 público da instância EC2. Isso permite que você visualize facilmente o endereço IP após o lançamento da instância.
+
+- ELB.tf
+
+1. Recurso de balanceador de carga elástico (ELB) da AWS: Neste bloco, é definido um recurso de balanceador de carga elástico da AWS. O balanceador de carga é identificado pelo nome "web-elb".
+2. Grupos de segurança do balanceador de carga: Neste bloco, é especificado o(s) grupo(s) de segurança associado(s) ao balanceador de carga. O grupo de segurança da instância EC2, definido anteriormente, é utilizado como grupo de segurança do balanceador de carga.
+3. Sub-redes do balanceador de carga: Neste bloco, são especificadas as sub-redes em que o balanceador de carga será implantado. As sub-redes são identificadas pelos IDs "aws_default_subnet.default_az1.id" e "aws_default_subnet.second_az1.id". Isso permite que o balanceador de carga seja distribuído em múltiplas zonas de disponibilidade, aumentando a resiliência e disponibilidade da aplicação.
+4. Balanceamento de carga entre zonas de disponibilidade: Neste bloco, é configurado o balanceamento de carga entre as zonas de disponibilidade. A propriedade "cross_zone_load_balancing" é definida como verdadeira, permitindo que o balanceador de carga distribua o tráfego de forma equilibrada entre as instâncias em diferentes zonas de disponibilidade.
+5. Verificação de saúde: Neste bloco, é definida a configuração de verificação de saúde para as instâncias. O balanceador de carga realizará verificações regulares para garantir que as instâncias estejam saudáveis e prontas para receber o tráfego. É definido um limite mínimo de requisições saudáveis (healthy_threshold) e um limite mínimo de requisições não saudáveis (unhealthy_threshold). Além disso, é especificado um tempo limite (timeout) e um intervalo (interval) para as verificações de saúde. O destino (target) da verificação é definido como "HTTP:80/", o que significa que o balanceador de carga realizará solicitações HTTP na porta 80 para verificar a saúde das instâncias.
+6. Listener (ouvinte) do balanceador de carga: Neste bloco, é configurado um ouvinte para o balanceador de carga. O ouvinte é responsável por receber o tráfego do cliente e encaminhá-lo para as instâncias EC2. Neste caso, o ouvinte está configurado para escutar na porta 80 (lb_port) e protocolo HTTP (lb_protocol) e encaminhar o tráfego para a porta 80 (instance_port) e protocolo HTTP (instance_protocol) das instâncias EC2.
+
+- userdata.tpl
+
+Esse código é um script de instalação e configuração de um servidor web em uma instância EC2. Ele atualiza o sistema operacional, instala o servidor web Nginx e cria uma página inicial com a mensagem "Hello World".
 
 ##	Pré-requisitos
 
