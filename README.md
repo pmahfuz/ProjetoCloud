@@ -104,7 +104,7 @@ Para rodar o código, abra o terminal na pasta onde está o código e rode o seg
 
 - terraform init
 
-Em seguida rode o seguinte comando para verificar se o código está correto:
+Em seguida rode o seguinte comando para verificar as modificações que serão feitas:
 
 - terraform plan
 
