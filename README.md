@@ -3,6 +3,11 @@
 
 O objetivo deste projeto é criar uma infraestrutura básica na nuvem AWS (Amazon Web Services) para hospedar um aplicativo web escalável e resiliente. O projeto envolve a criação de duas instâncias EC2 vazias e um Elastic Load Balancer (ELB) que gerencia o tráfego entre as duas instâncias.
 
+#### Diagrama do projeto
+
+![image](https://github.com/pmahfuz/ProjetoCloud/assets/62957998/9f1e5c28-90d0-4e34-aec6-44f8f28a2e2f)
+
+
 ## Um pouco sobre o código
 
 1. Configuração do provedor AWS:
